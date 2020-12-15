@@ -1,0 +1,29 @@
+body {
+    background: rgb(40, 40, 40);
+    /* font-family:'Times New Roman', Times, serif; */
+    color: white;
+}
+
+.body {
+    margin: 10px;
+}
+
+.card.bg-dark.border-light.mb-3 {
+    border-radius: 8px;
+}
+
+.card-body textarea{
+    background: transparent;    
+    color: white;
+    overflow: hidden;
+    width: 100%;
+    resize: none;
+    border-top: transparent;
+    border-left: transparent;
+    border-right: transparent;
+    border-bottom: 1px solid rgb(173, 173, 173);
+}
+
+.card-body textarea:focus {
+    outline: none;
+}
