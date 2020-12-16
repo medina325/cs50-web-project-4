@@ -3,12 +3,18 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.core.paginator import Paginator
 
-from .models import User
+from .models import User, Post
 
 
 def index(request):
-    return render(request, "network/index.html")
+    paginator = Paginator(Post.objects.order_by("-creation_date"), 10)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    
+    return render(request, "network/index.html", {'page_obj': page_obj})
 
 
 def login_view(request):
@@ -61,3 +67,16 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+
+@login_required
+def new_post(request):
+    if request.method == "POST":
+        username = request.user.username
+
+        newpost = Post(poster=request.user,
+                       content=request.POST["new_post_content"]
+                      )
+        newpost.save()
+
+    return JsonResponse({"message": "Post created!"}, status=201)

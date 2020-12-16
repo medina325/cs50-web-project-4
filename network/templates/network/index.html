@@ -1,21 +1,58 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+    {% if user.is_authenticated %}
+        <div class="card bg-dark border-light mb-3">
+            <div class="card-body">
+                <h3>What's in your mind?</h3>
+                <form id="new_post_form" action="{% url 'newpost' %}" method="POST">
+                    {% csrf_token %}
+                    <textarea name="new_post_content" rows="1" autofocus></textarea><hr>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Append posts do this div container with js -->
+
+    <!-- style="border: 1px solid white;" -->
     <h1>All posts</h1>
-    <div class="card bg-dark border-light mb-3">
-        <div class="card-body">
-            <h3>What's in your mind?</h3>
-            <textarea name="new_post" id="new_post" rows="1" autofocus></textarea><hr>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
+    <div id="posts-view" >
+        <ul class="list-unstyled">
+            {% for post in page_obj %}
+                <div class="card bg-dark border-light mb-3">
+                    <div class="card-body">
+                        <li class="media">
+                            <img src="https://avatars0.githubusercontent.com/u/56964034?s=400&u=217bb7e78249e241cae3d123a081404a8311b941&v=4" class="mr-4" alt="profile-pic" height="50px" width="50px" style="border-radius: 100px;">
+                            <div class="media-body">
+                                <h6>{{post.poster.username}} said:</h6>
+                                <p>{{post.content}}</p>
+                                <p>{{post.number_likes}} likes</p>
+                                <small class="text-muted">Posted on {{post.creation_date}}</small>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+            {% endfor %}
+        </ul>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-        </div>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
     </div>
 {% endblock %}
