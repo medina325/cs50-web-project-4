@@ -92,3 +92,15 @@ def new_post(request):
             )
     
     return JsonResponse({"error": "Method should be POST"}, status=400)
+
+@login_required
+def profile_view(request):
+    user = request.user
+    return render(request, "network/profilePage.html", {
+        "user": user,
+        "n_followers": user.number_followers,
+        "n_following": user.number_following,
+        "n_posts": user.posts.all().count(),
+        "posts": user.posts.all(),
+        "other_users": User.objects.exclude(pk=user.id)
+    })

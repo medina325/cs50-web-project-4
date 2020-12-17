@@ -4,6 +4,38 @@ body {
     color: white;
 }
 
+hr {
+    height: 1px;
+    background-color: rgb(95, 95, 95);
+}
+
+#post_pic {
+    height: 50px;
+    width: 50px;
+    border-radius: 100px;
+}
+
+#profile_pic {
+    height: 200px;
+    width: 200px;
+    border-radius: 100px;
+}
+
+.flex-item {
+    padding-left: 5px;
+}
+
+.flex-container {
+    list-style: none;
+    
+    display: flex;
+  }
+  
+  .row            { 
+    -webkit-flex-direction: row; 
+    flex-direction: row;
+  }
+
 .body {
     margin: 10px;
 }
