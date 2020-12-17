@@ -6,6 +6,8 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Post
 
@@ -46,7 +48,8 @@ def register(request):
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
-
+        profile_url = request.POST["img_url"]
+        
         # Ensure password matches confirmation
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
@@ -68,15 +71,24 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-
+@csrf_exempt
 @login_required
 def new_post(request):
+    
     if request.method == "POST":
-        username = request.user.username
+        data = json.loads(request.body)
 
         newpost = Post(poster=request.user,
-                       content=request.POST["new_post_content"]
+                       content=data.get("content", "")
                       )
         newpost.save()
 
-    return JsonResponse({"message": "Post created!"}, status=201)
+        return JsonResponse(
+            {
+                "message": "Post created!",
+                "newpost": newpost.serialize(),
+            }, 
+            status=201
+            )
+    
+    return JsonResponse({"error": "Method should be POST"}, status=400)
