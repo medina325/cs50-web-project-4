@@ -31,10 +31,10 @@ hr {
     display: flex;
   }
   
-  .row            { 
+.row { 
     -webkit-flex-direction: row; 
     flex-direction: row;
-  }
+}
 
 .body {
     margin: 10px;

@@ -4,6 +4,8 @@ from django.db import models
 
 class User(AbstractUser):
     profile_pic_url = models.URLField(default="https://i.imgur.com/HglJAz8.jpeg")
+    followers = models.ManyToManyField("self", related_name="followers", blank=True)
+    following = models.ManyToManyField("self", related_name="following", blank=True)
     number_followers = models.PositiveIntegerField(default=0)
     number_following = models.PositiveIntegerField(default=0)
 

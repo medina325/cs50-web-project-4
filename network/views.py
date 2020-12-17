@@ -96,11 +96,15 @@ def new_post(request):
 @login_required
 def profile_view(request):
     user = request.user
+    posts_list = list(user.posts.all())
+
     return render(request, "network/profilePage.html", {
         "user": user,
         "n_followers": user.number_followers,
         "n_following": user.number_following,
         "n_posts": user.posts.all().count(),
-        "posts": user.posts.all(),
-        "other_users": User.objects.exclude(pk=user.id)
+         "posts": user.posts.all(),
+        # "posts_except_last": posts_list[:-1],
+        # "last_post": posts_list[-1],
+        "other_users": User.objects.exclude(pk=user.id),
     })
