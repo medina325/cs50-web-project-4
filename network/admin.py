@@ -5,7 +5,7 @@ from .models import *
 # Register your models here.
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("username", "email", "number_followers", "number_following", "profile_pic_url")
+    list_display = ("username", "email", "profile_pic_url")
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ("poster","number_likes", "content")

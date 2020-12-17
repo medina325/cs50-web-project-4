@@ -46,10 +46,6 @@ def logout_view(request):
 
 def register(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        email = request.POST["email"]
-        profile_url = request.POST["img_url"]
-        
         # Ensure password matches confirmation
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
@@ -60,7 +56,12 @@ def register(request):
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(username, email, password)
+            # user = User.objects.create_user(username, email, password)
+            user = User(username=request.POST["username"],
+                        email=request.POST["email"],
+                        password=password,
+                        profile_pic_url=request.POST["img_url"]
+                       )
             user.save()
         except IntegrityError:
             return render(request, "network/register.html", {
@@ -95,16 +96,26 @@ def new_post(request):
 
 @login_required
 def profile_view(request):
-    user = request.user
-    posts_list = list(user.posts.all())
+    user = request.user    
+    other_users = User.objects.exclude(pk=user.id)
+
+    # Array of flags that tell if the current user is following the other users
+    following_flags = [True if user.following.filter(pk=u.id).exists() else False for u in other_users]
 
     return render(request, "network/profilePage.html", {
         "user": user,
-        "n_followers": user.number_followers,
-        "n_following": user.number_following,
+        "n_followers": user.followers.all().count(),
+        "n_following": user.following.all().count(),
         "n_posts": user.posts.all().count(),
-         "posts": user.posts.all(),
-        # "posts_except_last": posts_list[:-1],
-        # "last_post": posts_list[-1],
-        "other_users": User.objects.exclude(pk=user.id),
+        "posts": user.posts.all(),
+        "users_flags": zip(other_users, following_flags),
     })
+
+# Obs.: I feel like not even me will be able to read line 105
+# So the long version would be:
+# following = list()
+# for u in other_users:
+#   if user.following.filter(pk=u.id).exists():
+#       following.append(True)
+#   else:
+#       following.append(False)
