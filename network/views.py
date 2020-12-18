@@ -75,7 +75,7 @@ def register(request):
 @csrf_exempt
 @login_required
 def new_post(request):
-    
+
     if request.method == "POST":
         data = json.loads(request.body)
 
@@ -119,3 +119,35 @@ def profile_view(request):
 #       following.append(True)
 #   else:
 #       following.append(False)
+
+@csrf_exempt
+@login_required
+def follow_unfollow(request):
+
+    if request.method == "PUT":
+        user = request.user
+        data = json.loads(request.body)
+        
+        flag = data.get("flag", "")
+        target_user_id = data.get("target_user", "")
+        if flag:
+            user_to_follow = User.objects.get(pk=target_user_id)
+            
+            if (user_to_follow.followers.filter(pk=user.id).exists()):
+                return JsonResponse({"error": f"{user.username} already follows {user_to_follow.username}"}, status=400)
+            
+            user_to_follow.followers.add(user)
+            user_to_follow.save()
+        else:
+            user_to_unfollow = User.objects.get(pk=target_user_id)
+
+            if (user_to_unfollow.followers.filter(pk=user.id).exists() == False):
+                return JsonResponse({"error": f"{user.username} doesn't follow {user_to_unfollow.username}"}, status=400)
+            
+            user_to_unfollow.followers.remove(user)
+            user_to_unfollow.save()
+
+        return JsonResponse({"message": "Done!"}, status=201)
+    
+    return JsonResponse({"error": "Method should be PUT"}, status=400)
+
