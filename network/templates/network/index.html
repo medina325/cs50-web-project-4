@@ -43,6 +43,7 @@
                                 <!-- To identify in which post the number of likes should change
                                 I created this div parent node with the class equals to the post id
                                 just like the strong tag that displays the number of likes for that post -->
+                                
                                 <div class={{ post.id }}>
                                     <p><strong class={{ post.id }}>{{ like_per_post }}</strong> likes</p>
                                     {% if poster_flag == False and user.is_authenticated %}
@@ -58,6 +59,7 @@
                                     {% endif %}
                                 </div>
                             </div>
+                            <!-- <button class="btn btn-primary" style="height: 2rem;">Follow</button> -->
                         </li>
                     </div>
                 </div>

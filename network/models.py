@@ -29,4 +29,4 @@ class Post(models.Model):
         }
 
     def __str__(self):
-        return f"{self.poster.username}"
+        return f"{self.poster.username}-{self.id}"

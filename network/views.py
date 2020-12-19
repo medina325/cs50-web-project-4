@@ -44,6 +44,7 @@ def index(request):
     likes_per_post = [p.likers.count() for p in posts]
 
     return render(request, "network/index.html", {
+        'page_obj': page_obj,
         'posts_flags': zip(page_obj, poster_flags, like_flags, likes_per_post)
     })
 
@@ -138,6 +139,31 @@ def profile_view(request):
         "n_posts": user.posts.all().count(),
         "posts": user.posts.all(),
         "users_flags": zip(other_users, following_flags),
+    })
+
+
+@csrf_exempt
+@login_required
+def following_view(request):
+    user = request.user
+    
+    # Create ordered list of posts from users being followed by the current user
+    following_posts = list()
+    for following_user in user.following.all():
+        for post in following_user.posts.all():
+            following_posts.append(post)
+            
+    following_posts.sort(key=lambda post: post.creation_date, reverse=True)
+
+    # Array of flags that tell what posts the current user likes 
+    like_flags = [True if p.likers.filter(pk=user.id).exists() else False for p in following_posts]
+
+    # Array of number of likes per post
+    likes_per_post = [p.likers.count() for p in following_posts]
+
+    return render(request, "network/followingPage.html", {
+        "user": user,
+        "posts_flags": zip(following_posts, like_flags, likes_per_post),
     })
 
 @csrf_exempt
