@@ -10,6 +10,7 @@ class UserAdmin(admin.ModelAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ("poster","number_likes", "content")
+    filter_horizontal = ("likers",)
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Post, PostAdmin)

@@ -11,12 +11,41 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Post
 
+# Obs.: I feel like not even me will be able to read lines such as lines 37, 40 and 128
+# So the long version of such lines (line 128 in the example below) would be something like this:
+# following = list()
+# for u in other_users:
+#   if user.following.filter(pk=u.id).exists():
+#       following.append(True)
+#   else:
+#       following.append(False)
 
-def index(request):
-    paginator = Paginator(Post.objects.order_by("-creation_date"), 10)
+
+def index(request):    
+    # The idea here is to zip 3 arrays and iterate through them in the template: 
+    # 1. The posts
+    # 2. For each post a flag saying if the current user is the poster or not 
+    # 3. For each post a flag saying if the user likes the post or not
+    # 4. For each post the number of likes
+    # The second array is important because the 'like/dislike' buttons are not gonna be available
+    # to the a post's "poster"
+
+    posts = Post.objects.order_by("-creation_date")
+    paginator = Paginator(posts, 10)
     page_obj = paginator.get_page(request.GET.get("page"))
-    
-    return render(request, "network/index.html", {'page_obj': page_obj})
+
+    # Array of flags that tell if the current user posted the post or not
+    poster_flags = [True if p.poster.id == request.user.id else False for p in posts]
+
+    # Array of flags that tell what posts the current user likes 
+    like_flags = [True if p.likers.filter(pk=request.user.id).exists() else False for p in posts]
+
+    # Array of number of likes per post
+    likes_per_post = [p.likers.count() for p in posts]
+
+    return render(request, "network/index.html", {
+        'posts_flags': zip(page_obj, poster_flags, like_flags, likes_per_post)
+    })
 
 
 def login_view(request):
@@ -111,15 +140,6 @@ def profile_view(request):
         "users_flags": zip(other_users, following_flags),
     })
 
-# Obs.: I feel like not even me will be able to read line 105
-# So the long version would be:
-# following = list()
-# for u in other_users:
-#   if user.following.filter(pk=u.id).exists():
-#       following.append(True)
-#   else:
-#       following.append(False)
-
 @csrf_exempt
 @login_required
 def follow_unfollow(request):
@@ -130,6 +150,7 @@ def follow_unfollow(request):
         
         flag = data.get("flag", "")
         target_user_id = data.get("target_user", "")
+
         if flag:
             user_to_follow = User.objects.get(pk=target_user_id)
             
@@ -151,3 +172,37 @@ def follow_unfollow(request):
     
     return JsonResponse({"error": "Method should be PUT"}, status=400)
 
+
+@csrf_exempt
+@login_required
+def like_dislike(request):
+    
+    if request.method == "PUT":
+        user = request.user
+        data = json.loads(request.body)
+
+        flag = data.get("flag", "")
+        target_post_id = data.get("target_post", "")
+
+        if flag:
+            post_to_be_liked = Post.objects.get(pk=target_post_id)
+
+            if (post_to_be_liked.likers.filter(pk=user.id).exists()):
+                return JsonResponse({"error": f"{user.username} already likes this post"}, status=400)
+            
+            post_to_be_liked.likers.add(user)
+            post_to_be_liked.save()
+
+            return JsonResponse({"message": "Post liked!"}, status=201)
+        else:
+            post_to_be_disliked = Post.objects.get(pk=target_post_id)
+
+            if (post_to_be_disliked.likers.filter(pk=user.id).exists() == False):
+                return JsonResponse({"error": f"{user.username} already dislikes this post"}, status=400)
+            
+            post_to_be_disliked.likers.remove(user)
+            post_to_be_disliked.save()
+
+            return JsonResponse({"message": "Post disliked!"}, status=201)
+
+    return JsonResponse({"error": "Method should be PUT"}, status=400)
