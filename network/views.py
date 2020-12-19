@@ -152,7 +152,7 @@ def following_view(request):
     for following_user in user.following.all():
         for post in following_user.posts.all():
             following_posts.append(post)
-            
+
     following_posts.sort(key=lambda post: post.creation_date, reverse=True)
 
     # Array of flags that tell what posts the current user likes 
@@ -201,7 +201,7 @@ def follow_unfollow(request):
 
 @csrf_exempt
 @login_required
-def like_dislike(request):
+def like_unlike(request):
     
     if request.method == "PUT":
         user = request.user
@@ -221,13 +221,13 @@ def like_dislike(request):
 
             return JsonResponse({"message": "Post liked!"}, status=201)
         else:
-            post_to_be_disliked = Post.objects.get(pk=target_post_id)
+            post_to_be_unliked = Post.objects.get(pk=target_post_id)
 
-            if (post_to_be_disliked.likers.filter(pk=user.id).exists() == False):
+            if (post_to_be_unliked.likers.filter(pk=user.id).exists() == False):
                 return JsonResponse({"error": f"{user.username} already dislikes this post"}, status=400)
             
-            post_to_be_disliked.likers.remove(user)
-            post_to_be_disliked.save()
+            post_to_be_unliked.likers.remove(user)
+            post_to_be_unliked.save()
 
             return JsonResponse({"message": "Post disliked!"}, status=201)
 

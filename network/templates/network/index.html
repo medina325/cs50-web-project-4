@@ -24,7 +24,7 @@
     So it doesn't reload the entire page every time a user creates a new post -->
 
     <!-- Display all posts -->
-    <h1>All posts</h1>
+    <h2>All posts</h2>
     <div id="posts-view" >
         <ul class="list-unstyled">
             <!-- New post is appended dynamically here -->
@@ -39,17 +39,17 @@
                                 <p>{{post.content}}</p>
                                 <hr>
                                 <small class="text-muted">Posted on {{post.creation_date}}</small><br>
-
                                 <!-- To identify in which post the number of likes should change
                                 I created this div parent node with the class equals to the post id
                                 just like the strong tag that displays the number of likes for that post -->
                                 
                                 <div class={{ post.id }}>
                                     <p><strong class={{ post.id }}>{{ like_per_post }}</strong> likes</p>
+                                    
                                     {% if poster_flag == False and user.is_authenticated %}
                                         {% if like_flag %}
-                                            <a href="#" class="dislike">
-                                                <img src="{% static 'network/dislike.png' %}" alt="ain" height="40rem" width="40rem">
+                                            <a href="#" class="unlike">
+                                                <img src="{% static 'network/unlike.png' %}" alt="ain" height="40rem" width="40rem">
                                             </a>
                                         {% else %}
                                             <a href="#" class="like">
@@ -57,9 +57,9 @@
                                             </a>
                                         {% endif %}
                                     {% endif %}
+
                                 </div>
                             </div>
-                            <!-- <button class="btn btn-primary" style="height: 2rem;">Follow</button> -->
                         </li>
                     </div>
                 </div>
