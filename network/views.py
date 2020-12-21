@@ -11,8 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Post
 
-# Obs.: I feel like not even me will be able to read lines such as lines 37, 40 and 128
-# So the long version of such lines (line 128 in the example below) would be something like this:
+# Obs.: I feel like not even I will be able to read lines such as lines 38, 41 and 133
+# So the long version of such lines (line 133 in the example below) would be something like this:
 # following = list()
 # for u in other_users:
 #   if user.following.filter(pk=u.id).exists():
@@ -53,9 +53,9 @@ def login_view(request):
     if request.method == "POST":
 
         # Attempt to sign user in
-        username = request.POST["username"]
+        username = request.POST["email"]
         password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=email, password=password)
 
         # Check if authentication successful
         if user is not None:
@@ -86,12 +86,11 @@ def register(request):
 
         # Attempt to create new user
         try:
-            # user = User.objects.create_user(username, email, password)
-            user = User(username=request.POST["username"],
-                        email=request.POST["email"],
-                        password=password,
-                        profile_pic_url=request.POST["img_url"]
-                       )
+            email = request.POST["email"]
+            username = request.POST["username"]
+            profile_pic_url = request.POST["img_url"]
+            
+            user = User.objects.create_user(email, username, profile_pic_url, password)
             user.save()
         except IntegrityError:
             return render(request, "network/register.html", {
