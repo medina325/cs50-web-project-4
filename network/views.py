@@ -44,8 +44,9 @@ def index(request):
     likes_per_post = [p.likers.count() for p in posts]
 
     return render(request, "network/index.html", {
-        'page_obj': page_obj,
-        'posts_flags': zip(page_obj, poster_flags, like_flags, likes_per_post)
+        "user": request.user,
+        "page_obj": page_obj,
+        "posts_flags": zip(page_obj, poster_flags, like_flags, likes_per_post)
     })
 
 
@@ -53,7 +54,7 @@ def login_view(request):
     if request.method == "POST":
 
         # Attempt to sign user in
-        username = request.POST["email"]
+        email = request.POST["email"]
         password = request.POST["password"]
         user = authenticate(request, username=email, password=password)
 
@@ -135,7 +136,8 @@ def profile_view(request, page_user_id):
     return render(request, "network/profilePage.html", {
         "user": user,
         "page_user": page_user,
-        "following_page_user_flag": page_user.followers.filter(pk=user.id).exists(), # flag that tells is the current user follows the page user
+        # flag that tells is the current user follows the page user
+        "following_page_user_flag": page_user.followers.filter(pk=user.id).exists(), 
         "n_followers": page_user.followers.all().count(),
         "n_following": page_user.following.all().count(),
         "n_posts": page_user.posts.all().count(),
@@ -232,5 +234,23 @@ def like_unlike(request):
             post_to_be_unliked.save()
 
             return JsonResponse({"message": "Post disliked!"}, status=201)
+
+    return JsonResponse({"error": "Method should be PUT"}, status=400)
+
+
+@csrf_exempt
+@login_required
+def save_edited_post(request):
+    
+    if request.method == "PUT":
+        data = json.loads(request.body)
+
+        post_id = data.get("post_id", "")
+        post = Post.objects.get(pk=post_id)
+        post.content = data.get("edited_content", "")
+        post.save()
+
+        return JsonResponse({"message": "Post edited successfully!"}, status=201)
+
 
     return JsonResponse({"error": "Method should be PUT"}, status=400)

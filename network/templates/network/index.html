@@ -3,6 +3,7 @@
 
 {% block script %}
     <script src="{% static 'network/index.js' %}"></script>
+    <script src="{% static 'network/editPost.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -34,11 +35,25 @@
                     <div class="card-body">
                         <li class="media">
                             <img id="post_pic" class="mr-4" src={{ post.poster.profile_pic_url }} alt=":(">
-                            <div class="media-body">
+                            <div id={{ post.id }} class="media-body">
                                 <h6>{{ post.poster.username }} said:</h6>
-                                <p>{{ post.content }}</p>
+
+                                <!-- Alternate between the post content and the editable
+                                textarea -->
+                                <p class="post_content">{{ post.content }}</p>
+
                                 <hr>
+                                
+                                {% if user.username == post.poster.username %}
+                                    <!-- This form is used to alternate between 'edit' and 'save' buttons
+                                    and to send the edited textarea -->
+                                    <form class="edit_save_form">
+                                        <button name={{ post.id }} class="btn btn-primary edit_btn">Edit</button>
+                                    </form>
+                                {% endif %}
+
                                 <small class="text-muted">Posted on {{ post.creation_date }}</small><br>
+                               
                                 <!-- To identify in which post the number of likes should change
                                 I created this div parent node with the class equals to the post id
                                 just like the strong tag that displays the number of likes for that post -->
@@ -49,11 +64,11 @@
                                     {% if poster_flag == False and user.is_authenticated %}
                                         {% if like_flag %}
                                             <a href="#" class="unlike">
-                                                <img src="{% static 'network/unlike.png' %}" alt="ain" height="40rem" width="40rem">
+                                                <img src="{% static 'network/un_like.png' %}" alt="ain" height="40rem" width="40rem" style="opacity: 30%;">
                                             </a>
                                         {% else %}
                                             <a href="#" class="like">
-                                                <img src="{% static 'network/nugget.png' %}" alt="ain" height="40rem" width="40rem">
+                                                <img src="{% static 'network/un_like.png' %}" alt="ain" height="40rem" width="40rem">
                                             </a>
                                         {% endif %}
                                     {% endif %}
