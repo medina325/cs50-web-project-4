@@ -4,6 +4,15 @@ body {
     color: white;
 }
 
+.username_link {
+    color: #6c757d;
+}
+
+.username_link:hover, .username_link:focus {
+    text-decoration: none;
+    color: rgb(141, 149, 155);
+}
+
 hr {
     height: 1px;
     background-color: rgb(95, 95, 95);

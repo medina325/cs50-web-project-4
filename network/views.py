@@ -124,20 +124,23 @@ def new_post(request):
     return JsonResponse({"error": "Method should be POST"}, status=400)
 
 @login_required
-def profile_view(request):
-    user = request.user    
-    other_users = User.objects.exclude(pk=user.id)
+def profile_view(request, page_user_id):
+    user = request.user
+    page_user = User.objects.get(pk=page_user_id)    
+    other_users = User.objects.exclude(pk=page_user.id)
 
-    # Array of flags that tell if the current user is following the other users
+    # Array of flags that tells if the current user is following the other users
     following_flags = [True if user.following.filter(pk=u.id).exists() else False for u in other_users]
 
     return render(request, "network/profilePage.html", {
         "user": user,
-        "n_followers": user.followers.all().count(),
-        "n_following": user.following.all().count(),
-        "n_posts": user.posts.all().count(),
-        "posts": user.posts.all(),
-        "users_flags": zip(other_users, following_flags),
+        "page_user": page_user,
+        "following_page_user_flag": page_user.followers.filter(pk=user.id).exists(), # flag that tells is the current user follows the page user
+        "n_followers": page_user.followers.all().count(),
+        "n_following": page_user.following.all().count(),
+        "n_posts": page_user.posts.all().count(),
+        "posts": page_user.posts.all(),
+        "other_users_flags": zip(other_users, following_flags),
     })
 
 
