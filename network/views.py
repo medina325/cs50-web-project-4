@@ -102,12 +102,13 @@ def register(request):
 @csrf_exempt
 @login_required
 def new_post(request):
-
+    
     if request.method == "POST":
         data = json.loads(request.body)
+        content = data.get("content", "")
 
         newpost = Post(poster=request.user,
-                       content=data.get("content", "")
+                       content=content
                       )
         newpost.save()
 

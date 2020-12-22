@@ -72,7 +72,7 @@ hr {
 #textarea_new_post{
     background: transparent;    
     color: white;
-    overflow: hidden;
+    /* overflow: hidden; */
     width: 100%;
     resize: none;
     border-top: transparent;
