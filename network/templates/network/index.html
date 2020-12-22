@@ -30,7 +30,7 @@
         <ul class="list-unstyled">
             <!-- New post is appended dynamically here -->
             <div class="new_post_div"></div>
-            {% for post, poster_flag, like_flag, like_per_post in posts_flags %}
+            {% for post, like_flag, like_per_post in posts_flags %}
                 <div class="card bg-dark border-light mb-3">
                     <div class="card-body">
                         <li class="media">
@@ -63,7 +63,7 @@
                                 <div class={{ post.id }}>
                                     <p><strong class={{ post.id }}>{{ like_per_post }}</strong> likes</p>
                                     
-                                    {% if poster_flag == False and user.is_authenticated %}
+                                    {% if post.poster != user and user.is_authenticated %}
                                         {% if like_flag %}
                                             <a href="#" class="unlike">
                                                 <img src="{% static 'network/un_like.png' %}" alt="ain" height="40rem" width="40rem" style="opacity: 30%;">
@@ -83,40 +83,5 @@
             {% endfor %}
         </ul>
     </div>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            
-            {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
-                <!-- <a href="?page={{ page_obj.previous_page_number }}">previous</a> -->
-                {% for i in previous_pages %}
-                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                {% endfor %}
-            {% endif %}
-
-            <!-- <p>{{page_obj.number}}</p> 
-            <p>{{page_obj.has_previous}}</p> 
-            <p>{{page_obj.has_next}}</p>
-            <p>{{paginator.page_range}}</p>
-            <p>{{paginator.count}}</p> 
-            <p>{{paginator.num_pages}}</p>  -->
-
-
-          
-            <span class="current">
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">{{ page_obj.number }} <span class="sr-only">(current)</span></a>
-                </li>
-            </span>
-
-            {% if page_obj.has_next %}
-                {% for i in next_pages %}
-                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                {% endfor %}
-                <!-- <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li> -->
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
-            {% endif %}
-          
-        </ul>
-      </nav>
+    {% include "network/pagination.html" %}
 {% endblock %}

@@ -11,8 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Post
 
-# Obs.: I feel like not even I will be able to read lines such as lines 38, 41 and 133
-# So the long version of such lines (line 133 in the example below) would be something like this:
+# Obs.: I feel like not even I will be able to read lines such as lines 35, 41 and 136
+# So the long version of such lines (line 136 in the example below) would be something like this:
 # following = list()
 # for u in other_users:
 #   if user.following.filter(pk=u.id).exists():
@@ -24,18 +24,12 @@ from .models import User, Post
 def index(request):    
     # The idea here is to zip 3 arrays and iterate through them in the template: 
     # 1. The posts
-    # 2. For each post a flag saying if the current user is the poster or not 
-    # 3. For each post a flag saying if the user likes the post or not
-    # 4. For each post the number of likes
-    # The second array is important because the 'like/dislike' buttons are not gonna be available
-    # to the a post's "poster"
+    # 2. For each post a flag saying if the user likes the post or not
+    # 3. For each post the number of likes
 
     posts = Post.objects.order_by("-creation_date")
     paginator = Paginator(posts, 10)
     page_obj = paginator.get_page(request.GET.get("page"))
-
-    # Array of flags that tell if the current user posted the post or not
-    poster_flags = [True if p.poster.id == request.user.id else False for p in posts]
 
     # Array of flags that tell what posts the current user likes 
     like_flags = [True if p.likers.filter(pk=request.user.id).exists() else False for p in posts]
@@ -49,7 +43,7 @@ def index(request):
         "previous_pages": [i for i in range(1, page_obj.number)],
         "next_pages": [i for i in range(page_obj.number+1, paginator.num_pages+1)],
         "page_obj": page_obj,
-        "posts_flags": zip(page_obj, poster_flags, like_flags, likes_per_post)
+        "posts_flags": zip(page_obj, like_flags, likes_per_post)
     })
 
 
@@ -129,13 +123,23 @@ def new_post(request):
 
 @login_required
 def profile_view(request, page_user_id):
+    # Current logged user
     user = request.user
-    page_user = User.objects.get(pk=page_user_id)    
+
+    # User having it's profile page displayed
+    page_user = User.objects.get(pk=page_user_id) 
+
+    # Other users   
     other_users = User.objects.exclude(pk=page_user.id)
 
     # Array of flags that tells if the current user is following the other users
     following_flags = [True if user.following.filter(pk=u.id).exists() else False for u in other_users]
 
+    posts = page_user.posts.all()
+    # Creating pagination
+    paginator = Paginator(posts, 10)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    
     return render(request, "network/profilePage.html", {
         "user": user,
         "page_user": page_user,
@@ -144,8 +148,12 @@ def profile_view(request, page_user_id):
         "n_followers": page_user.followers.all().count(),
         "n_following": page_user.following.all().count(),
         "n_posts": page_user.posts.all().count(),
-        "posts": page_user.posts.all(),
+        "posts": posts,
         "other_users_flags": zip(other_users, following_flags),
+        "paginator": paginator,
+        "previous_pages": [i for i in range(1, page_obj.number)],
+        "next_pages": [i for i in range(page_obj.number+1, paginator.num_pages+1)],
+        "page_obj": page_obj,
     })
 
 
@@ -168,9 +176,17 @@ def following_view(request):
     # Array of number of likes per post
     likes_per_post = [p.likers.count() for p in following_posts]
 
+    # Creating pagination
+    paginator = Paginator(following_posts, 10)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
     return render(request, "network/followingPage.html", {
         "user": user,
         "posts_flags": zip(following_posts, like_flags, likes_per_post),
+        "paginator": paginator,
+        "previous_pages": [i for i in range(1, page_obj.number)],
+        "next_pages": [i for i in range(page_obj.number+1, paginator.num_pages+1)],
+        "page_obj": page_obj,
     })
 
 @csrf_exempt
