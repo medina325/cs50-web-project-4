@@ -4,13 +4,12 @@ body {
     color: white;
 }
 
-a p.like_unlike_links {
-    color: rgb(255, 255, 255);
+h6 .poster_username_link {
+    color: white;
 }
-
-.like_unlike_links:hover, .like_unlike_links:focus {
-    text-decoration: none;
-    color: rgb(255, 0, 0);
+h6 .poster_username_link:hover, h6 .poster_username_link:focus {
+    color: rgb(228, 228, 228);
+    text-decoration: wavy;
 }
 
 .username_link {

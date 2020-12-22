@@ -36,7 +36,9 @@
                         <li class="media">
                             <img id="post_pic" class="mr-4" src={{ post.poster.profile_pic_url }} alt=":(">
                             <div id={{ post.id }} class="media-body">
-                                <h6>{{ post.poster.username }} said:</h6>
+                                <h6>
+                                    <a class="poster_username_link" href="{% url 'profilepage' post.poster.id %}">{{ post.poster.username }}</a> said:
+                                </h6>
 
                                 <!-- Alternate between the post content and the editable
                                 textarea -->
@@ -81,21 +83,40 @@
             {% endfor %}
         </ul>
     </div>
-    <div class="pagination">
-        <span class="step-links">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            
             {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+                <!-- <a href="?page={{ page_obj.previous_page_number }}">previous</a> -->
+                {% for i in previous_pages %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endfor %}
             {% endif %}
-    
+
+            <!-- <p>{{page_obj.number}}</p> 
+            <p>{{page_obj.has_previous}}</p> 
+            <p>{{page_obj.has_next}}</p>
+            <p>{{paginator.page_range}}</p>
+            <p>{{paginator.count}}</p> 
+            <p>{{paginator.num_pages}}</p>  -->
+
+
+          
             <span class="current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="#">{{ page_obj.number }} <span class="sr-only">(current)</span></a>
+                </li>
             </span>
-    
+
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% for i in next_pages %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endfor %}
+                <!-- <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li> -->
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
             {% endif %}
-        </span>
-    </div>
+          
+        </ul>
+      </nav>
 {% endblock %}
