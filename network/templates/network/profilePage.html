@@ -1,0 +1,96 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'network/profile.js' %}"></script>
+    <script src="{% static 'network/editPost.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <header class="profile_header mt-4 mb-4">
+        <div class="media">
+            <img id="profile_pic" class="align-self-start mr-3" src={{ page_user.profile_pic_url }} alt={{ page_user.username }}>
+            <div class="media-body">
+                <h3 class="text-secondary"><a class="username_link" href="#">{{ page_user.username }}</a></h3>
+                <div class="d-flex flex-row bd-highlight mb-3">
+                    <div class="p-2 bd-highlight"><strong>{{ n_followers }}</strong> followers</div>
+                    <div class="p-2 bd-highlight"><strong id="n_following">{{ n_following }}</strong> following</div>
+                    <div class="p-2 bd-highlight"><strong>{{ n_posts }}</strong> posts</div>
+                </div>
+                {% if page_user != user %}
+                    {% if following_page_user_flag %}
+                        <button id={{ page_user.id }} class="btn btn-warning mb-n2">Unfollow</button>
+                    {% else %}
+                        <button id={{ page_user.id }} class="btn btn-success mb-n2">Follow</button>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    <hr>
+    <h2 class="ml-3 mb-3">Posts</h2>
+    <div class="container ml-0">
+        <div class="row">
+            <div class="col">
+                {% for post in posts %}    
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="card bg-dark border-light mb-3">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div id={{ post.id }} class="media-body">
+                                            <h6>
+                                                <a class="poster_username_link" href="{% url 'profilepage' post.poster.id %}">{{ post.poster.username }}</a> said:
+                                            </h6>
+                                            
+                                            <!-- Alternate between the post content and the editable
+                                            textarea -->
+                                            <p class="post_content">{{ post.content }}</p>
+                                            
+                                            <hr class="ml-n3" style="width: 110%;">
+
+                                            {% if user == page_user %}
+                                                <!-- This form is used to alternate between 'edit' and 'save' buttons
+                                                and to send the edited textarea -->
+                                                <form class="edit_save_form">
+                                                    <button name={{ post.id }} class="btn btn-primary edit_btn">Edit</button>
+                                                </form>
+                                            {% endif %}
+
+                                            <small class="text-muted">Posted on {{ post.creation_date }}</small>
+                                            <div>{{ post.number_likes }} likes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>  
+            <div class="col-sm-2">
+                {% for other_user, following_flag in other_users_flags %}
+                    {% if other_user != user %}
+                        <div class="card text-center text-white bg-dark mb-3" style="width: 15rem;">
+                            <img class="card-img-top" src={{ other_user.profile_pic_url }} alt={{ other_user.username }} style="height: 13rem;">
+                            <div class="card-body">
+                                <h5 class="card-title mt-n1">
+                                    <a class="username_link" href="{% url 'profilepage' other_user.id %}">
+                                        {{ other_user.username }}
+                                    </a>
+                                </h5>
+
+                                {% if following_flag %}
+                                    <button id={{ other_user.id }} class="btn btn-warning mb-n2">Unfollow</button>
+                                {% else %}
+                                    <button id={{ other_user.id }} class="btn btn-success mb-n2">Follow</button>
+                                {% endif %}
+                            
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>        
+    </div>   
+    {% include "network/pagination.html" %}
+{% endblock %}

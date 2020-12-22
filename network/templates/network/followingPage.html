@@ -1,0 +1,54 @@
+<!-- This template is indeed very similar to the index.html template (I admit the ctrl+c ctrl+v) -->
+
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <h2>Following posts</h2>
+    <div id="posts-view" >
+        <ul class="list-unstyled">
+            <!-- New post is appended dynamically here -->
+            <div class="new_post_div"></div>
+            {% for post, like_flag, like_per_post in posts_flags %}
+                <div class="card bg-dark border-light mb-3">
+                    <div class="card-body">
+                        <li class="media">
+                            <img id="post_pic" class="mr-4" src={{ post.poster.profile_pic_url }} alt=":(">
+                            <div class="media-body">
+                                <h6>
+                                    <a class="poster_username_link" href="{% url 'profilepage' post.poster.id %}">
+                                        {{ post.poster.username }} said:</a>
+                                </h6>
+                                <p>{{ post.content }}</p>
+                                <hr>
+                                <small class="text-muted">Posted on {{ post.creation_date }}</small><br>
+
+                                <!-- To identify in which post the number of likes should change
+                                I created this div parent node with the class equals to the post id
+                                just like the strong tag that displays the number of likes for that post -->
+                                
+                                <div class={{ post.id }}>
+                                    <p><strong class={{ post.id }}>{{ like_per_post }}</strong> likes</p>
+                                    {% if like_flag %}
+                                        <a href="#" class="unlike">
+                                            <img src="{% static 'network/un_like.png' %}" alt="ain" height="40rem" width="40rem" style="opacity: 30%;">
+                                        </a>
+                                    {% else %}
+                                        <a href="#" class="like">
+                                            <img src="{% static 'network/un_like.png' %}" alt="ain" height="40rem" width="40rem">
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+            {% endfor %}
+        </ul>
+    </div>
+    {% include "network/pagination.html" %}
+{% endblock %}

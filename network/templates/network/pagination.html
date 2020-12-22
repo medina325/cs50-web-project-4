@@ -1,0 +1,25 @@
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        
+        <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+        {% if page_obj.has_previous %}
+            {% for i in previous_pages %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endfor %}
+        {% endif %}
+      
+        <span class="current">
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">{{ page_obj.number }} <span class="sr-only">(current)</span></a>
+            </li>
+        </span>
+
+        {% if page_obj.has_next %}
+            {% for i in next_pages %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endfor %}
+        {% endif %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
+      
+    </ul>
+</nav>
