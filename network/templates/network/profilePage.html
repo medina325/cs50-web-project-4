@@ -4,6 +4,7 @@
 {% block script %}
     <script src="{% static 'network/profile.js' %}"></script>
     <script src="{% static 'network/editPost.js' %}"></script>
+    <script src="{% static 'network/like_unlike.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -32,7 +33,7 @@
     <div class="container ml-0">
         <div class="row">
             <div class="col">
-                {% for post in posts %}    
+                {% for post, like_flag, like_per_post in posts_likeflags %}    
                     <div class="row">
                         <div class="col-md-5">
                             <div class="card bg-dark border-light mb-3">
@@ -55,16 +56,32 @@
                                                 <form class="edit_save_form">
                                                     <button name={{ post.id }} class="btn btn-primary edit_btn">Edit</button>
                                                 </form>
+                                            {% else %}
+                                                <div class={{ post.id }}>
+                                                    <p><strong class={{ post.id }}>{{ like_per_post }}</strong> likes</p>
+
+                                                    {% if like_flag %}
+                                                        <a href="#" class="unlike">
+                                                            <img src="{% static 'network/un_like.png' %}" alt="ain" height="40rem" width="40rem" style="opacity: 30%;">
+                                                        </a>
+                                                    {% else %}
+                                                        <a href="#" class="like">
+                                                            <img src="{% static 'network/un_like.png' %}" alt="ain" height="40rem" width="40rem">
+                                                        </a>
+                                                    {% endif %}
+                                                   
+                                                </div>
                                             {% endif %}
 
                                             <small class="text-muted">Posted on {{ post.creation_date }}</small>
-                                            <div>{{ post.number_likes }} likes</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% empty %}
+                        <h2>No posts here :/</h2>
                 {% endfor %}
             </div>  
             <div class="col-sm-2">

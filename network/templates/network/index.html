@@ -23,15 +23,14 @@
         </div>
     {% endif %}
 
-    <!-- When a user creates a new post, this new post is appended to the div tag whose class is called "new_post_div"
+    <!-- When a user creates a new post, this new post is prepended to the list of posts
     So it doesn't reload the entire page every time a user creates a new post -->
 
     <!-- Display all posts -->
     <h2>All posts</h2>
     <div id="posts-view" >
-        <ul class="list-unstyled">
+        <ul id="posts_list" class="list-unstyled">
             <!-- New post is appended dynamically here -->
-            <div class="new_post_div"></div>
             {% for post, like_flag, like_per_post in posts_flags %}
                 <div class="card bg-dark border-light mb-3">
                     <div class="card-body">
@@ -82,6 +81,8 @@
                         </li>
                     </div>
                 </div>
+                {% empty %}
+                    <h2>No posts here :/</h2>
             {% endfor %}
         </ul>
     </div>

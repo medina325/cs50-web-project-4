@@ -63,7 +63,8 @@ function new_post() {
             `;     
     
             // Append the new post and clean the textarea
-            document.querySelector('.new_post_div').prepend(div_card);
+            // document.querySelector('.new_post_div').prepend(div_card);
+            document.querySelector('#posts_list').prepend(div_card);
             newpost_textarea.value = '';
         
             // At least the edit button is created separetely to add the event listener to it

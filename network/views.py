@@ -137,13 +137,22 @@ def profile_view(request, page_user_id):
     following_flags = [True if user.following.filter(pk=u.id).exists() else False for u in other_users]
 
     posts = page_user.posts.all()
-    # Creating pagination
-    paginator = Paginator(posts, 10)
-    page_obj = paginator.get_page(request.GET.get("page"))
+    
     
     # This flag tells if the current user follows the "page user" to determine which button shall be presented 
     # follow or unfollow 
     follow_unfollow_flag = page_user.followers.filter(pk=user.id).exists()
+
+    # Array of flags that tell what posts the current user likes 
+    like_flags = [True if p.likers.filter(pk=request.user.id).exists() else False for p in posts]
+
+    # Array of number of likes per post
+    likes_per_post = [p.likers.count() for p in posts]
+
+    # Creating pagination
+    paginator = Paginator(posts, 10)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
     return render(request, "network/profilePage.html", {
         "user": user,
         "page_user": page_user,
@@ -151,7 +160,7 @@ def profile_view(request, page_user_id):
         "n_followers": page_user.followers.all().count(),
         "n_following": page_user.following.all().count(),
         "n_posts": page_user.posts.all().count(),
-        "posts": posts,
+        "posts_likeflags": zip(posts, like_flags, likes_per_post),
         "other_users_flags": zip(other_users, following_flags),
         "paginator": paginator,
         "previous_pages": [i for i in range(1, page_obj.number)],

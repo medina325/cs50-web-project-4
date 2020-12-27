@@ -22,6 +22,15 @@ document.addEventListener("DOMContentLoaded", function() {
             edit_btn.addEventListener('click', () => edit_post(edit_btn));
         });
     }
+
+    // Like and unlike button handlers
+    document.querySelectorAll('.like').forEach(like_button => {
+        like_button.onclick = () => like(like_button);
+    });
+
+    document.querySelectorAll('.unlike').forEach(unlike_button => {
+        unlike_button.onclick = () => unlike(unlike_button);
+    });
 });
 
 function unfollow(btn)
