@@ -4,6 +4,7 @@
 {% block script %}
     <script src="{% static 'network/index.js' %}"></script>
     <script src="{% static 'network/editPost.js' %}"></script>
+    <script src="{% static 'network/like_unlike.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -16,6 +17,7 @@
                     <textarea id="textarea_new_post" form="new_post_form" rows="3" autofocus required></textarea>
                     <br><br>
                     <button type="submit" class="btn btn-primary">Post</button>
+                    <input id="page_number" type="hidden" value={{ page_obj.number }}>
                 </form>
             </div>
         </div>

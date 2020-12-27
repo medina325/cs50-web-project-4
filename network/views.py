@@ -141,11 +141,13 @@ def profile_view(request, page_user_id):
     paginator = Paginator(posts, 10)
     page_obj = paginator.get_page(request.GET.get("page"))
     
+    # This flag tells if the current user follows the "page user" to determine which button shall be presented 
+    # follow or unfollow 
+    follow_unfollow_flag = page_user.followers.filter(pk=user.id).exists()
     return render(request, "network/profilePage.html", {
         "user": user,
         "page_user": page_user,
-        # flag that tells is the current user follows the page user
-        "following_page_user_flag": page_user.followers.filter(pk=user.id).exists(), 
+        "follow_unfollow_flag": follow_unfollow_flag, 
         "n_followers": page_user.followers.all().count(),
         "n_following": page_user.following.all().count(),
         "n_posts": page_user.posts.all().count(),

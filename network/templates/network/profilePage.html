@@ -18,7 +18,7 @@
                     <div class="p-2 bd-highlight"><strong>{{ n_posts }}</strong> posts</div>
                 </div>
                 {% if page_user != user %}
-                    {% if following_page_user_flag %}
+                    {% if follow_unfollow_flag %}
                         <button id={{ page_user.id }} class="btn btn-warning mb-n2">Unfollow</button>
                     {% else %}
                         <button id={{ page_user.id }} class="btn btn-success mb-n2">Follow</button>

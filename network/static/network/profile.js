@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
+
+    // Check if there are buttons (follow/unfollow) first
     var buttons = document.querySelectorAll('button');
-    
     if (buttons)
     {        
         buttons.forEach((button) => {
@@ -12,6 +13,15 @@ document.addEventListener("DOMContentLoaded", function() {
             }); 
         });                    
     } 
+
+    // Check if there are edit buttons first
+    var edit_buttons = document.querySelectorAll('.btn.btn-primary.edit_btn');
+    if (edit_buttons)
+    {
+        edit_buttons.forEach((edit_btn) => {
+            edit_btn.addEventListener('click', () => edit_post(edit_btn));
+        });
+    }
 });
 
 function unfollow(btn)
