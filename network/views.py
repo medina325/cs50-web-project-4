@@ -229,7 +229,13 @@ def follow_unfollow(request):
             user_to_unfollow.followers.remove(user)
             user_to_unfollow.save()
 
-        return JsonResponse({"message": "Done!"}, status=201)
+        page_user_id = data.get("page_user_id", "")
+        page_user = User.objects.get(pk=page_user_id)
+        return JsonResponse(
+            {
+                "message": "Done!",
+                "update_following": True if user == page_user else False
+            }, status=201)
     
     return JsonResponse({"error": "Method should be PUT"}, status=400)
 

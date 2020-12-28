@@ -50,6 +50,10 @@
                                             
                                             <hr class="ml-n3" style="width: 110%;">
 
+                                            <!-- If the current user is having it's profile page displayed then
+                                            an 'Edit' button will be presented, otherwise like/unlikes buttons
+                                            will be showed instead -->
+                                            
                                             {% if user == page_user %}
                                                 <!-- This form is used to alternate between 'edit' and 'save' buttons
                                                 and to send the edited textarea -->
@@ -61,11 +65,11 @@
                                                     <p><strong class={{ post.id }}>{{ like_per_post }}</strong> likes</p>
 
                                                     {% if like_flag %}
-                                                        <a href="#" class="unlike">
+                                                        <a href="#!" class="unlike">
                                                             <img src="{% static 'network/un_like.png' %}" alt="ain" height="40rem" width="40rem" style="opacity: 30%;">
                                                         </a>
                                                     {% else %}
-                                                        <a href="#" class="like">
+                                                        <a href="#!" class="like">
                                                             <img src="{% static 'network/un_like.png' %}" alt="ain" height="40rem" width="40rem">
                                                         </a>
                                                     {% endif %}
