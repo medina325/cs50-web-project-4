@@ -42,6 +42,10 @@ document.addEventListener("DOMContentLoaded", function() {
 // the current profile page is displaying the current user.
 // So my idea here is to send the page_user's id so the view can verify if that's the current user or not
 
+// The same is valid for the number of followers being displayed in a given profile page, if the page_user
+// is the same as the 'target_user' (the one being followed or unfollowed) then it's number of followers should
+// be updated
+
 function unfollow(btn)
 {   
     let url_pieces = window.location.href.split('/');
@@ -58,10 +62,15 @@ function unfollow(btn)
     .then(result => {
         console.log(result);
 
-        if (result["update_following"]) {
+        if (result['update_following']) {
             // Updating the 'following' number
             let n_following = document.getElementById('n_following');
             n_following.innerHTML = parseInt(n_following.innerHTML) - 1;
+        } 
+        else if (result['update_followers']) {
+            // Updating the 'followers' number
+            let n_followers = document.getElementById('n_followers');
+            n_followers.innerHTML = parseInt(n_followers.innerHTML) - 1;
         }
 
         // Creating new 'follow' button and adding an event listener to it
@@ -99,6 +108,11 @@ function follow(btn)
             // Updating the 'following' number
             let n_following = document.getElementById('n_following');
             n_following.innerHTML = parseInt(n_following.innerHTML) + 1;
+        }
+        else if (result['update_followers']) {
+            // Updating the 'followers' number
+            let n_followers = document.getElementById('n_followers');
+            n_followers.innerHTML = parseInt(n_followers.innerHTML) + 1;
         }
         
         // Creating new 'unfollow' button and adding an event listener to it

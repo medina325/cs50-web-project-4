@@ -212,8 +212,9 @@ def follow_unfollow(request):
         flag = data.get("flag", "")
         target_user_id = data.get("target_user", "")
 
+        target_user = User.objects.get(pk=target_user_id)
         if flag:
-            user_to_follow = User.objects.get(pk=target_user_id)
+            user_to_follow = target_user
             
             if (user_to_follow.followers.filter(pk=user.id).exists()):
                 return JsonResponse({"error": f"{user.username} already follows {user_to_follow.username}"}, status=400)
@@ -221,7 +222,7 @@ def follow_unfollow(request):
             user_to_follow.followers.add(user)
             user_to_follow.save()
         else:
-            user_to_unfollow = User.objects.get(pk=target_user_id)
+            user_to_unfollow = target_user
 
             if (user_to_unfollow.followers.filter(pk=user.id).exists() == False):
                 return JsonResponse({"error": f"{user.username} doesn't follow {user_to_unfollow.username}"}, status=400)
@@ -234,7 +235,8 @@ def follow_unfollow(request):
         return JsonResponse(
             {
                 "message": "Done!",
-                "update_following": True if user == page_user else False
+                "update_following": True if user == page_user else False,
+                "update_followers": True if page_user == target_user else False,
             }, status=201)
     
     return JsonResponse({"error": "Method should be PUT"}, status=400)
