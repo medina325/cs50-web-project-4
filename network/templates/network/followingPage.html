@@ -12,9 +12,7 @@
     <h2>Following posts</h2>
     <div id="posts-view" >
         <ul class="list-unstyled">
-            <!-- New post is appended dynamically here -->
-            <div class="new_post_div"></div>
-            {% for post, like_flag, like_per_post in posts_flags %}
+            {% for post, like_flag, n_like_per_post in posts_flags %}
                 <div class="card bg-dark border-light mb-3">
                     <div class="card-body">
                         <li class="media">
@@ -33,7 +31,7 @@
                                 just like the strong tag that displays the number of likes for that post -->
                                 
                                 <div class={{ post.id }}>
-                                    <p><strong class={{ post.id }}>{{ like_per_post }}</strong> likes</p>
+                                    <p><strong class={{ post.id }}>{{ n_like_per_post }}</strong> likes</p>
                                     {% if like_flag %}
                                         <a href="#!" class="unlike">
                                             <img src="{% static 'network/un_like.png' %}" alt="ain" height="40rem" width="40rem" style="opacity: 30%;">
@@ -49,7 +47,7 @@
                     </div>
                 </div>
                 {% empty %}
-                        <h2>No posts here :/</h2>
+                    <h2>No posts here :/</h2>
             {% endfor %}
         </ul>
     </div>

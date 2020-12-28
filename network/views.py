@@ -39,11 +39,11 @@ def index(request):
 
     return render(request, "network/index.html", {
         "user": request.user,
+        "posts_flags": zip(page_obj, like_flags, likes_per_post),
         "paginator": paginator,
         "previous_pages": [i for i in range(1, page_obj.number)],
         "next_pages": [i for i in range(page_obj.number+1, paginator.num_pages+1)],
-        "page_obj": page_obj,
-        "posts_flags": zip(page_obj, like_flags, likes_per_post)
+        "page_obj": page_obj,  
     })
 
 
@@ -194,7 +194,7 @@ def following_view(request):
 
     return render(request, "network/followingPage.html", {
         "user": user,
-        "posts_flags": zip(following_posts, like_flags, likes_per_post),
+        "posts_flags": zip(page_obj, like_flags, likes_per_post),
         "paginator": paginator,
         "previous_pages": [i for i in range(1, page_obj.number)],
         "next_pages": [i for i in range(page_obj.number+1, paginator.num_pages+1)],
