@@ -160,7 +160,7 @@ def profile_view(request, page_user_id):
         "n_followers": page_user.followers.all().count(),
         "n_following": page_user.following.all().count(),
         "n_posts": page_user.posts.all().count(),
-        "posts_likeflags": zip(posts, like_flags, likes_per_post),
+        "posts_likeflags": zip(page_obj, like_flags, likes_per_post),
         "other_users_flags": zip(other_users, following_flags),
         "paginator": paginator,
         "previous_pages": [i for i in range(1, page_obj.number)],

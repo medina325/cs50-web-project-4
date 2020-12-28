@@ -12,7 +12,7 @@ function edit_post(edit_btn) {
     let edit_textarea = document.createElement('textarea');
     edit_textarea.className = 'edit_textarea';
     edit_textarea.autofocus = true;
-    edit_textarea.innerHTML = p.innerHTML;
+    edit_textarea.innerHTML = p.innerHTML.replace(/<br>/g, '\n');
     edit_form.appendChild(edit_textarea);
 
     // Replacing post content with editable textarea
@@ -44,7 +44,7 @@ function edit_post(edit_btn) {
 
             // Putting everything back
             save_btn.replaceWith(edit_btn);
-            p.innerHTML = edit_textarea.value;
+            p.innerHTML = edit_textarea.value.replace(/\n/g, '<br>');
             edit_textarea.replaceWith(p);
         });
     
