@@ -62,10 +62,8 @@ function new_post() {
             </div>
             `;     
     
-            // Append the new post and clean the textarea
-            // document.querySelector('.new_post_div').prepend(div_card);
+            // Append the new post
             document.querySelector('#posts_list').prepend(div_card);
-            newpost_textarea.value = '';
         
             // At least the edit button is created separetely to add the event listener to it
             // and then it's appended to the form inside the post
@@ -77,7 +75,9 @@ function new_post() {
     
             let form = document.getElementById('new_edit_form');
             form.appendChild(new_edit_btn);
-        }  
+        }
+        // Clean the textarea in the end
+        newpost_textarea.value = ''; 
     });
 
     return false;

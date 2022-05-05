@@ -122,7 +122,7 @@ def new_post(request):
     
     return JsonResponse({"error": "Method should be POST"}, status=400)
 
-@login_required
+@login_required(login_url='login')
 def profile_view(request, page_user_id):
     # Current logged user
     user = request.user
